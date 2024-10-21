@@ -6,20 +6,27 @@ import {FakeSnippetOperations} from "./mock/fakeSnippetOperations.ts";
 import {TestCase} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
-// import {useAuth0} from "@auth0/auth0-react";
-// import {useEffect} from "react";
+import {useAuth0} from "@auth0/auth0-react";
+import {useCallback, useEffect} from "react";
 
+let myToken: string = "";
 
 export const useSnippetsOperations = () => {
-  // const {getAccessTokenSilently} = useAuth0()
-  //
-  // useEffect(() => {
-  //     getAccessTokenSilently()
-  //         .then(token => {
-  //             console.log(token)
-  //         })
-  //         .catch(error => console.error(error));
-  // });
+  const { getAccessTokenSilently } = useAuth0();
+
+  const fetchToken = useCallback(() => {
+    getAccessTokenSilently()
+        .then(token => {
+          myToken = token;
+          console.log(token);
+        })
+        .catch(error => console.error(error));
+  }, [getAccessTokenSilently]);
+
+  useEffect(() => {
+    fetchToken();
+  }, [fetchToken]);
+
 
   const snippetOperations: SnippetOperations = new FakeSnippetOperations(/* getAccessTokenSilently */); // TODO: Replace with your implementation
 
@@ -27,6 +34,14 @@ export const useSnippetsOperations = () => {
 }
 
 export const useGetSnippets = (page: number = 0, pageSize: number = 10, snippetName?: string) => {
+  console.log("myToken:", myToken);
+  fetch("http://localhost:8081/test/parser/communication", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + myToken
+    },
+  }).then(response => console.log("Let's go: " + response.json().then(data => console.log(data.message))));
   const snippetOperations = useSnippetsOperations()
 
   return useQuery<PaginatedSnippets, Error>(['listSnippets', page,pageSize,snippetName], () => snippetOperations.listSnippetDescriptors(page, pageSize,snippetName));
