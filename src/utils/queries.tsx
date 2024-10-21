@@ -8,6 +8,7 @@ import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
 import {useAuth0} from "@auth0/auth0-react";
 import {useCallback, useEffect} from "react";
+import {auth_audience, BACKEND_URL} from "./constants.ts";
 
 let myToken: string = "";
 
@@ -15,10 +16,9 @@ export const useSnippetsOperations = () => {
   const { getAccessTokenSilently } = useAuth0();
 
   const fetchToken = useCallback(() => {
-    getAccessTokenSilently()
+    getAccessTokenSilently({authorizationParams : {audience: auth_audience}})
         .then(token => {
           myToken = token;
-          console.log(token);
         })
         .catch(error => console.error(error));
   }, [getAccessTokenSilently]);
@@ -34,14 +34,13 @@ export const useSnippetsOperations = () => {
 }
 
 export const useGetSnippets = (page: number = 0, pageSize: number = 10, snippetName?: string) => {
-  console.log("myToken:", myToken);
-  fetch("http://localhost:8081/test/parser/communication", {
+  fetch( BACKEND_URL + "/test/parser/communication", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + myToken
     },
-  }).then(response => console.log("Let's go: " + response.json().then(data => console.log(data.message))));
+  }).then(response => console.log("Let's go: " + response.json().then(data => console.log("Response: ", data.message))));
   const snippetOperations = useSnippetsOperations()
 
   return useQuery<PaginatedSnippets, Error>(['listSnippets', page,pageSize,snippetName], () => snippetOperations.listSnippetDescriptors(page, pageSize,snippetName));
