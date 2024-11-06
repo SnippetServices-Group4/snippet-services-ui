@@ -30,4 +30,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/snippetservices-group4/react-app:latest
+          tags: ghcr.io/snippetservices-group4/react-app-dev:latest
