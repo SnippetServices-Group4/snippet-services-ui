@@ -5,16 +5,12 @@ import {Rule} from "../types/Rule.ts";
 import {TestCase} from "../types/TestCase.ts";
 import {PaginatedUsers} from "./users.ts";
 import {TestCaseResult} from "./queries.tsx";
-import {getFetch} from "./api/apiService.ts";
 import {FakeSnippetStore} from "./mock/fakeSnippetStore.ts";
+import {useApiService} from "./api/apiService.ts";
 
 export class RealSnippetOperations implements SnippetOperations {
-    private readonly token: string;
-    private readonly fakeStore = new FakeSnippetStore()
-
-    constructor(fetchToken: string) {
-        this.token = fetchToken;
-    }
+    private readonly fakeStore = new FakeSnippetStore();
+    private readonly apiService = useApiService();  // Call the API service functions from here
 
     createSnippet(createSnippet: CreateSnippet): Promise<Snippet> {
         return Promise.resolve(undefined);
@@ -52,10 +48,9 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve(undefined);
     }
 
-    listSnippetDescriptors(page: number, pageSize: number, sippetName?: string): Promise<PaginatedSnippets> {
+    listSnippetDescriptors(page: number, pageSize: number, snippetName?: string): Promise<PaginatedSnippets> {
         console.log("IM ON THIS METHOD");
-        console.log("Token: ", this.token);
-        getFetch(`/test/parser/communication`, this.token).then(async(response) => {console.log("Response: ", await response.json())});
+        this.apiService.getFetch(`/test/parser/communication`).then(async(response: any) => {console.log("Response: ", await response.json())});
         const response: PaginatedSnippets = {
             page: page,
             page_size: pageSize,
