@@ -1,5 +1,5 @@
 # Step 1: Build the React app using Vite
-FROM node:18 AS build
+FROM node:20 AS build
 
 WORKDIR /app
 
@@ -13,10 +13,10 @@ COPY . .
 # Build the React app (produces static assets in the dist/ folder)
 RUN npm run build
 
-# Step 2: Use multi-stage to copy built assets to a new folder
+# Step 2: Prepare the assets for deployment
 FROM alpine:latest
 
-WORKDIR /usr/share/nginx/html
+WORKDIR /app
 
-# Copy the built app from the build stage
-COPY --from=build /app/dist/ .
+# Copy only the built static assets to /app
+COPY --from=build /app/dist /app
