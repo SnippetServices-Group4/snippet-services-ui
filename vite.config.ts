@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
+    base: './',
     define: {
       'process.env.FRONTEND_URL': JSON.stringify(env.FRONTEND_URL),
       'process.env.BACKEND_URL': JSON.stringify(env.BACKEND_URL)
