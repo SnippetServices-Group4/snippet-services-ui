@@ -5,16 +5,10 @@ import {PaginatedUsers} from "./users.ts";
 import {TestCase} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
-import {useAuth0} from "@auth0/auth0-react";
-import {auth_audience} from "./constants.ts";
-import {RealSnippetOperations} from "./realSnippetOperations.ts";
+import {FakeSnippetOperations} from "./mock/fakeSnippetOperations.ts";
 
 export const useSnippetsOperations = async () => {
-  const { getAccessTokenSilently } = useAuth0();
-
-  const token = await getAccessTokenSilently({ authorizationParams: { audience: auth_audience } });
-
-  const snippetOperations: SnippetOperations = new RealSnippetOperations(token); // TODO: Replace with your implementation
+  const snippetOperations: SnippetOperations = new FakeSnippetOperations();
 
   return snippetOperations
 }

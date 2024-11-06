@@ -1,3 +1,4 @@
+/*
 import {SnippetOperations} from "./snippetOperations.ts";
 import {FileType} from "../types/FileType.ts";
 import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "./snippet.ts";
@@ -89,3 +90,4 @@ export class RealSnippetOperations implements SnippetOperations {
     }
 
 }
+ */
