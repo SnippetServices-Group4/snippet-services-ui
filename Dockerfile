@@ -10,6 +10,18 @@ RUN npm install
 # Copy project files
 COPY . .
 
+# Inject environment variables for the React build
+ARG VITE_AUTH0_DOMAIN
+ARG VITE_AUTH0_CLIENT_ID
+ARG VITE_AUTH0_AUDIENCE
+ARG VITE_BACKEND_URL
+
+# Make the environment variables available at build time
+ENV VITE_AUTH0_DOMAIN=${VITE_AUTH0_DOMAIN}
+ENV VITE_AUTH0_CLIENT_ID=${VITE_AUTH0_CLIENT_ID}
+ENV VITE_AUTH0_AUDIENCE=${VITE_AUTH0_AUDIENCE}
+ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
+
 # Build the React app (produces static assets in the dist/ folder)
 RUN npm run build
 
