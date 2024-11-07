@@ -13,10 +13,17 @@ COPY . .
 # Build the React app (produces static assets in the dist/ folder)
 RUN npm run build
 
-# Step 2: Prepare the assets for deployment
-FROM alpine:latest
+# Step 2: Serve the built assets with Nginx
+FROM nginx:alpine
 
-WORKDIR /app
+# Copy built assets to Nginx's default root directory
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy only the built static assets to /app
-COPY --from=build /app/dist /app
+# Copy custom Nginx configuration
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
