@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy project files
+# Copy rest of the project files
 COPY . .
 
 # Inject environment variables for the React build
