@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [closed]
     branches:
-      - main
+      - master
 
 jobs:
   build_and_push:
@@ -36,3 +36,12 @@ jobs:
             VITE_AUTH0_CLIENT_ID=${{ secrets.VITE_AUTH0_CLIENT_ID }}
             VITE_AUTH0_AUDIENCE=${{ secrets.VITE_AUTH0_AUDIENCE }}
             VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}
+
+  deploy-vm-job:
+    needs: build_and_push
+    name: Deploy Images in VM
+    uses: SnippetServices-Group4/Workflows/.github/workflows/deploy-images-vm.yaml@main
+    with:
+      environment: "production"
+      service_name: "react-app"
+    secrets: inherit
