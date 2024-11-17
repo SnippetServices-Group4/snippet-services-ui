@@ -1,6 +1,6 @@
 import {SnippetOperations} from "./snippetOperations.ts";
 import {FileType} from "../types/FileType.ts";
-import {CreateSnippet, noContentSnippet, PaginatedSnippets, Snippet} from "./snippet.ts";
+import {CreateSnippet, noContentSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "./snippet.ts";
 import {Rule} from "../types/Rule.ts";
 import {TestCase} from "../types/TestCase.ts";
 import {PaginatedUsers} from "./users.ts";
@@ -18,17 +18,7 @@ export class RealSnippetOperations implements SnippetOperations {
         }
         try {
             const response = await this.apiService.postFetch("/snippets/snippets/create", snippet);
-            const responseSnippet = response.snippet;
-            return Promise.resolve({
-                id: responseSnippet.snippetId,
-                name: responseSnippet.name,
-                content: responseSnippet.content,
-                language: responseSnippet.language.langName,
-                author: responseSnippet.owner,
-                // TODO: Retrieve the extension and compliance from the backend
-                extension: "printscript",
-                compliance: "pending"
-            });
+            return adaptSnippet(response.snippet);
         }
         catch (error) {
             return Promise.reject(error);
@@ -114,7 +104,13 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve("fail");
     }
 
-    updateSnippetById(): Promise<Snippet> {
-        return Promise.resolve({id: "", name: "", author: "", content: "", extension: "", language: "", compliance: "pending"});
+    async updateSnippetById(id: string, snippet: UpdateSnippet): Promise<Snippet> {
+        try {
+            const response = await this.apiService.putFetch("/snippets/snippets/update/" + id, snippet);
+            return adaptSnippet(response.snippet);
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
 }
