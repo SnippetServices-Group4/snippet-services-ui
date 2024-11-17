@@ -67,7 +67,7 @@ export class RealSnippetOperations implements SnippetOperations {
 
     async getUserFriends(name?: string, page: number = 0, pageSize: number = 0): Promise<PaginatedUsers> {
         try {
-            const response = await this.apiService.getFetch("/permissions/users/getAll");
+            const response = await this.apiService.getFetch("/permissions/user/getAll");
             const users = adaptUsers(response.users);
             return Promise.resolve({page: page, users, page_size: pageSize, count: 0});
         }
