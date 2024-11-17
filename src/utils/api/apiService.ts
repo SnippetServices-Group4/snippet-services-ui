@@ -12,17 +12,17 @@ export function useApiService() {
 
     const getFetch = async (url: string) => {
         const token = await getToken();
-        console.log("Token: ", token);
-        return await fetch(API_URL + url, {
+        const response = await fetch(API_URL + url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
         });
+        return handleResponse(response);
     };
 
-    const postFetch = async (url: string, body: any) => {
+    const postFetch = async (url: string, body: unknown) => {
         const token = await getToken();
         const response = await fetch(API_URL + url, {
             method: "POST",
@@ -32,10 +32,10 @@ export function useApiService() {
             },
             body: JSON.stringify(body)
         });
-        return response.json();
+        return handleResponse(response);
     };
 
-    const putFetch = async (url: string, body: any) => {
+    const putFetch = async (url: string, body: unknown) => {
         const token = await getToken();
         const response = await fetch(API_URL + url, {
             method: "PUT",
@@ -45,7 +45,7 @@ export function useApiService() {
             },
             body: JSON.stringify(body)
         });
-        return response.json();
+        return handleResponse(response);
     };
 
     const deleteFetch = async (url: string) => {
@@ -57,8 +57,17 @@ export function useApiService() {
                 "Authorization": "Bearer " + token
             },
         });
-        return response.json();
+        return handleResponse(response);
     };
+
+    async function handleResponse(response: Response) {
+        const responseJson = await response.json();
+        if (!response.ok) {
+            console.log("Something went wrong when fetching the data: ", responseJson.message);
+            throw new Error(responseJson.message);
+        }
+        return responseJson.data;
+    }
 
     return { getFetch, postFetch, putFetch, deleteFetch };
 }
