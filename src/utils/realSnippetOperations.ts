@@ -82,7 +82,7 @@ export class RealSnippetOperations implements SnippetOperations {
     async listSnippetDescriptors(page: number, pageSize: number): Promise<PaginatedSnippets> {
         try {
             const response = await this.apiService.getFetch("/snippets/snippets/getAll");
-            const snippets: noContentSnippet[] = adaptSnippetsList(response.snippetsList);
+            const snippets: noContentSnippet[] = adaptSnippetsList(response.snippetList);
             return Promise.resolve({snippets, page, count: 20, page_size: pageSize});
         }
         catch (error) {
