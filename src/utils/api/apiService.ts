@@ -12,6 +12,7 @@ export function useApiService() {
 
     const getFetch = async (url: string) => {
         const token = await getToken();
+        console.log("Your token is:", token)
         const response = await fetch(API_URL + url, {
             method: "GET",
             headers: {
@@ -24,6 +25,7 @@ export function useApiService() {
 
     const postFetch = async (url: string, body: unknown) => {
         const token = await getToken();
+        console.log("Your token is:", token)
         const response = await fetch(API_URL + url, {
             method: "POST",
             headers: {
@@ -37,6 +39,7 @@ export function useApiService() {
 
     const putFetch = async (url: string, body: unknown) => {
         const token = await getToken();
+        console.log("Your token is:", token)
         const response = await fetch(API_URL + url, {
             method: "PUT",
             headers: {
@@ -50,6 +53,7 @@ export function useApiService() {
 
     const deleteFetch = async (url: string) => {
         const token = await getToken();
+        console.log("Your token is:", token)
         const response = await fetch(API_URL + url, {
             method: "DELETE",
             headers: {
