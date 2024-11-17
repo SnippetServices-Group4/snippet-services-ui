@@ -17,14 +17,14 @@ import {AddSnippetModal} from "./AddSnippetModal.tsx";
 import {useRef, useState} from "react";
 import {Add, Search} from "@mui/icons-material";
 import {LoadingSnippetRow, SnippetRow} from "./SnippetRow.tsx";
-import {CreateSnippetWithLang, getFileLanguage, Snippet} from "../../utils/snippet.ts";
+import {CreateSnippetWithLang, getFileLanguage, noContentSnippet} from "../../utils/snippet.ts";
 import {usePaginationContext} from "../../contexts/paginationContext.tsx";
 import {useSnackbarContext} from "../../contexts/snackbarContext.tsx";
 import {useGetFileTypes} from "../../utils/queries.tsx";
 
 type SnippetTableProps = {
   handleClickSnippet: (id: string) => void;
-  snippets?: Snippet[];
+  snippets?: noContentSnippet[];
   loading: boolean;
   handleSearchSnippet: (snippetName: string) => void;
 }
