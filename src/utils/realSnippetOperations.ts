@@ -1,27 +1,51 @@
-/*
 import {SnippetOperations} from "./snippetOperations.ts";
 import {FileType} from "../types/FileType.ts";
-import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "./snippet.ts";
+import {CreateSnippet, noContentSnippet, PaginatedSnippets, Snippet} from "./snippet.ts";
 import {Rule} from "../types/Rule.ts";
 import {TestCase} from "../types/TestCase.ts";
 import {PaginatedUsers} from "./users.ts";
 import {TestCaseResult} from "./queries.tsx";
-import {FakeSnippetStore} from "./mock/fakeSnippetStore.ts";
 import {useApiService} from "./api/apiService.ts";
+import {adaptSnippet, adaptSnippetsList} from "./adapter/Adapter.ts";
 
 export class RealSnippetOperations implements SnippetOperations {
-    private readonly fakeStore = new FakeSnippetStore();
-    private readonly apiService = useApiService();  // Call the API service functions from here
+    private readonly apiService = useApiService();
 
-    createSnippet(createSnippet: CreateSnippet): Promise<Snippet> {
-        return Promise.resolve(undefined);
+    async createSnippet(createSnippet: CreateSnippet): Promise<Snippet> {
+        const snippet = {
+            version: "1.1",
+            ...createSnippet
+        }
+        try {
+            const response = await this.apiService.postFetch("/snippets/snippets/create", snippet);
+            const responseSnippet = response.snippet;
+            return Promise.resolve({
+                id: responseSnippet.snippetId,
+                name: responseSnippet.name,
+                content: responseSnippet.content,
+                language: responseSnippet.language.langName,
+                author: responseSnippet.owner,
+                // TODO: Retrieve the extension and compliance from the backend
+                extension: "printscript",
+                compliance: "pending"
+            });
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
 
-    deleteSnippet(id: string): Promise<string> {
-        return Promise.resolve("");
+    async deleteSnippet(id: string): Promise<string> {
+        try {
+            const response = await this.apiService.deleteFetch("/snippets/snippets/delete/" + id);
+            return response.message;
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
 
-    formatSnippet(snippet: string): Promise<string> {
+    formatSnippet(): Promise<string> {
         return Promise.resolve("");
     }
 
@@ -37,57 +61,60 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve([]);
     }
 
-    getSnippetById(id: string): Promise<Snippet | undefined> {
-        return Promise.resolve(undefined);
+    async getSnippetById(id: string): Promise<Snippet | undefined> {
+        try {
+            const response = await this.apiService.getFetch("/snippets/snippets/get/" + id);
+            return adaptSnippet(response.snippet);
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
 
     getTestCases(): Promise<TestCase[]> {
         return Promise.resolve([]);
     }
 
-    getUserFriends(name?: string, page?: number, pageSize?: number): Promise<PaginatedUsers> {
-        return Promise.resolve(undefined);
+    getUserFriends(): Promise<PaginatedUsers> {
+        return Promise.resolve({page: 0, users: [{id: "", name: ""}], page_size: 0, count: 0});
     }
 
-    listSnippetDescriptors(page: number, pageSize: number, snippetName?: string): Promise<PaginatedSnippets> {
-        console.log("IM ON THIS METHOD");
-        this.apiService.getFetch(`/test/parser/communication`).then(async(response: any) => {console.log("Response: ", await response.json())});
-        const response: PaginatedSnippets = {
-            page: page,
-            page_size: pageSize,
-            count: 20,
-            snippets: page == 0 ? this.fakeStore.listSnippetDescriptors().splice(0,pageSize) : this.fakeStore.listSnippetDescriptors().splice(1,2)
+    async listSnippetDescriptors(page: number, pageSize: number): Promise<PaginatedSnippets> {
+        try {
+            const response = await this.apiService.getFetch("/snippets/snippets/getAll");
+            const snippets: noContentSnippet[] = adaptSnippetsList(response.snippetsList);
+            return Promise.resolve({snippets, page, count: 20, page_size: pageSize});
         }
-        return Promise.resolve(response);
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
 
-    modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
+    modifyFormatRule(): Promise<Rule[]> {
         return Promise.resolve([]);
     }
 
-    modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
+    modifyLintingRule(): Promise<Rule[]> {
         return Promise.resolve([]);
     }
 
-    postTestCase(testCase: Partial<TestCase>): Promise<TestCase> {
-        return Promise.resolve(undefined);
+    postTestCase(): Promise<TestCase> {
+        return Promise.resolve({id: "", name: ""});
     }
 
-    removeTestCase(id: string): Promise<string> {
+    removeTestCase(): Promise<string> {
         return Promise.resolve("");
     }
 
-    shareSnippet(snippetId: string, userId: string): Promise<Snippet> {
-        return Promise.resolve(undefined);
+    shareSnippet(): Promise<Snippet> {
+        return Promise.resolve({id: "", name: "", author: "", content: "", extension: "", language: "", compliance: "pending"});
     }
 
-    testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult> {
-        return Promise.resolve(undefined);
+    testSnippet(): Promise<TestCaseResult> {
+        return Promise.resolve("fail");
     }
 
-    updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet> {
-        return Promise.resolve(undefined);
+    updateSnippetById(): Promise<Snippet> {
+        return Promise.resolve({id: "", name: "", author: "", content: "", extension: "", language: "", compliance: "pending"});
     }
-
 }
- */
