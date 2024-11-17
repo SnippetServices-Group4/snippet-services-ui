@@ -1,12 +1,12 @@
 import {SnippetOperations} from "./snippetOperations.ts";
 import {FileType} from "../types/FileType.ts";
-import {CreateSnippet, noContentSnippet, PaginatedSnippets, Snippet} from "./snippet.ts";
+import {CreateSnippet, noContentSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "./snippet.ts";
 import {Rule} from "../types/Rule.ts";
 import {TestCase} from "../types/TestCase.ts";
 import {PaginatedUsers} from "./users.ts";
 import {TestCaseResult} from "./queries.tsx";
 import {useApiService} from "./api/apiService.ts";
-import {adaptSnippet, adaptSnippetsList} from "./adapter/Adapter.ts";
+import {adaptSnippet, adaptSnippetsList, adaptUsers} from "./adapter/Adapter.ts";
 
 export class RealSnippetOperations implements SnippetOperations {
     private readonly apiService = useApiService();
@@ -18,17 +18,7 @@ export class RealSnippetOperations implements SnippetOperations {
         }
         try {
             const response = await this.apiService.postFetch("/snippets/snippets/create", snippet);
-            const responseSnippet = response.snippet;
-            return Promise.resolve({
-                id: responseSnippet.snippetId,
-                name: responseSnippet.name,
-                content: responseSnippet.content,
-                language: responseSnippet.language.langName,
-                author: responseSnippet.owner,
-                // TODO: Retrieve the extension and compliance from the backend
-                extension: "printscript",
-                compliance: "pending"
-            });
+            return adaptSnippet(response.snippet);
         }
         catch (error) {
             return Promise.reject(error);
@@ -75,8 +65,15 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve([]);
     }
 
-    getUserFriends(): Promise<PaginatedUsers> {
-        return Promise.resolve({page: 0, users: [{id: "", name: ""}], page_size: 0, count: 0});
+    async getUserFriends(name?: string, page: number = 0, pageSize: number = 0): Promise<PaginatedUsers> {
+        try {
+            const response = await this.apiService.getFetch("/permissions/users/getAll");
+            const users = adaptUsers(response.users);
+            return Promise.resolve({page: page, users, page_size: pageSize, count: 0});
+        }
+        catch (error) {
+            return Promise.reject({error, name});
+        }
     }
 
     async listSnippetDescriptors(page: number, pageSize: number): Promise<PaginatedSnippets> {
@@ -114,7 +111,13 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve("fail");
     }
 
-    updateSnippetById(): Promise<Snippet> {
-        return Promise.resolve({id: "", name: "", author: "", content: "", extension: "", language: "", compliance: "pending"});
+    async updateSnippetById(id: string, snippet: UpdateSnippet): Promise<Snippet> {
+        try {
+            const response = await this.apiService.putFetch("/snippets/snippets/update/" + id, snippet);
+            return adaptSnippet(response.snippet);
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
 }
