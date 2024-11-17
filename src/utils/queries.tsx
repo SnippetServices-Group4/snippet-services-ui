@@ -6,83 +6,86 @@ import {TestCase} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
 import {FakeSnippetOperations} from "./mock/fakeSnippetOperations.ts";
+import {RealSnippetOperations} from "./realSnippetOperations.ts";
 
-export const useSnippetsOperations = async () => {
-  const snippetOperations: SnippetOperations = new FakeSnippetOperations();
+export const useSnippetsOperations = () => {
+  const fakeSnippetOperations: SnippetOperations = new FakeSnippetOperations();
+  const snippetOperations = new RealSnippetOperations();
 
-  return snippetOperations
+  return {fakeSnippetOperations, snippetOperations}
 }
 
 export const useGetSnippets = (page: number = 0, pageSize: number = 10, snippetName?: string) => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useQuery<PaginatedSnippets, Error>(['listSnippets', page,pageSize,snippetName], async() => (await snippetOperations).listSnippetDescriptors(page, pageSize,snippetName));
+  return useQuery<PaginatedSnippets, Error>(['listSnippets', page, pageSize, snippetName], async() => await snippetOperations.listSnippetDescriptors(page, pageSize));
 };
 
 export const useGetSnippetById = (id: string) => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useQuery<Snippet | undefined, Error>(['snippet', id], async() => (await snippetOperations).getSnippetById(id), {
-    enabled: !!id, // This query will not execute until the id is provided
+  return useQuery<Snippet | undefined, Error>(['snippet', id], async() => await snippetOperations.getSnippetById(id), {
+    enabled: !!id
   });
 };
 
 export const useCreateSnippet = ({onSuccess}: {onSuccess: () => void}): UseMutationResult<Snippet, Error, CreateSnippet> => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useMutation<Snippet, Error, CreateSnippet>(async(createSnippet) => (await snippetOperations).createSnippet(createSnippet), {onSuccess});
+  return useMutation<Snippet, Error, CreateSnippet>(
+    async (createSnippet) => await snippetOperations.createSnippet(createSnippet),
+    { onSuccess }
+  );
 };
 
 export const useUpdateSnippetById = ({onSuccess}: {onSuccess: () => void}): UseMutationResult<Snippet, Error, {
   id: string;
   updateSnippet: UpdateSnippet
 }> => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<Snippet, Error, { id: string; updateSnippet: UpdateSnippet }>(
-      async({id, updateSnippet}) => (await snippetOperations).updateSnippetById(id, updateSnippet),{
+      async({id, updateSnippet}) => await snippetOperations.updateSnippetById(id, updateSnippet),{
         onSuccess,
     }
   );
 };
 
 export const useGetUsers = (name: string = "", page: number = 0, pageSize: number = 10) => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useQuery<PaginatedUsers, Error>(['users',name,page,pageSize], async() => (await snippetOperations).getUserFriends(name,page, pageSize));
+  return useQuery<PaginatedUsers, Error>(['users',name,page,pageSize], async() => await snippetOperations.getUserFriends(name,page, pageSize));
 };
 
 export const useShareSnippet = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<Snippet, Error, { snippetId: string; userId: string }>(
-      async({snippetId, userId}) => (await snippetOperations).shareSnippet(snippetId, userId)
+      async({snippetId, userId}) => await snippetOperations.shareSnippet(snippetId, userId)
   );
 };
 
 
 export const useGetTestCases = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useQuery<TestCase[] | undefined, Error>(['testCases'], async() => (await snippetOperations).getTestCases(), {});
+  return useQuery<TestCase[] | undefined, Error>(['testCases'], async() => await snippetOperations.getTestCases(), {});
 };
 
-
 export const usePostTestCase = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<TestCase, Error, Partial<TestCase>>(
-      async(tc) => (await snippetOperations).postTestCase(tc)
+      async(tc) => await snippetOperations.postTestCase(tc)
   );
 };
 
-
 export const useRemoveTestCase = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<string, Error, string>(
       ['removeTestCase'],
-      async(id) => (await snippetOperations).removeTestCase(id),
+      async(id) => await snippetOperations.removeTestCase(id),
       {
         onSuccess,
       }
@@ -92,69 +95,64 @@ export const useRemoveTestCase = ({onSuccess}: {onSuccess: () => void}) => {
 export type TestCaseResult = "success" | "fail"
 
 export const useTestSnippet = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<TestCaseResult, Error, Partial<TestCase>>(
-      async(tc) => (await snippetOperations).testSnippet(tc)
+      async(tc) => await snippetOperations.testSnippet(tc)
   )
 }
 
-
-
 export const useGetFormatRules = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useQuery<Rule[], Error>('formatRules', async() => (await snippetOperations).getFormatRules());
+  return useQuery<Rule[], Error>('formatRules', async() => await snippetOperations.getFormatRules());
 }
 
 export const useModifyFormatRules = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<Rule[], Error, Rule[]>(
-      async(rule) => (await snippetOperations).modifyFormatRule(rule),
+      async(rule) => await snippetOperations.modifyFormatRule(rule),
       {onSuccess}
   );
 }
 
-
 export const useGetLintingRules = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useQuery<Rule[], Error>('lintingRules', async() => (await snippetOperations).getLintingRules());
+  return useQuery<Rule[], Error>('lintingRules', async() => await snippetOperations.getLintingRules());
 }
 
-
 export const useModifyLintingRules = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<Rule[], Error, Rule[]>(
-      async(rule) => (await snippetOperations).modifyLintingRule(rule),
+      async(rule) => await snippetOperations.modifyLintingRule(rule),
       {onSuccess}
   );
 }
 
 export const useFormatSnippet = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
   return useMutation<string, Error, string>(
-      async(snippetContent) => (await snippetOperations).formatSnippet(snippetContent)
+      async(snippetContent) => await snippetOperations.formatSnippet(snippetContent)
   );
 }
 
 export const useDeleteSnippet = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().snippetOperations
 
   return useMutation<string, Error, string>(
-      async(id) => (await snippetOperations).deleteSnippet(id),
+      async(id) => await snippetOperations.deleteSnippet(id),
       {
         onSuccess,
       }
   );
 }
 
-
 export const useGetFileTypes = () => {
-  const snippetOperations = useSnippetsOperations()
+  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useQuery<FileType[], Error>('fileTypes', async() => (await snippetOperations).getFileTypes());
+  return useQuery<FileType[], Error>('fileTypes', async() => await snippetOperations.getFileTypes());
 }

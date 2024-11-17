@@ -12,18 +12,20 @@ export function useApiService() {
 
     const getFetch = async (url: string) => {
         const token = await getToken();
-        console.log("Token: ", token);
-        return await fetch(API_URL + url, {
+        console.log("Your token is:", token)
+        const response = await fetch(API_URL + url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
         });
+        return handleResponse(response);
     };
 
-    const postFetch = async (url: string, body: any) => {
+    const postFetch = async (url: string, body: unknown) => {
         const token = await getToken();
+        console.log("Your token is:", token)
         const response = await fetch(API_URL + url, {
             method: "POST",
             headers: {
@@ -32,11 +34,12 @@ export function useApiService() {
             },
             body: JSON.stringify(body)
         });
-        return response.json();
+        return handleResponse(response);
     };
 
-    const putFetch = async (url: string, body: any) => {
+    const putFetch = async (url: string, body: unknown) => {
         const token = await getToken();
+        console.log("Your token is:", token)
         const response = await fetch(API_URL + url, {
             method: "PUT",
             headers: {
@@ -45,11 +48,12 @@ export function useApiService() {
             },
             body: JSON.stringify(body)
         });
-        return response.json();
+        return handleResponse(response);
     };
 
     const deleteFetch = async (url: string) => {
         const token = await getToken();
+        console.log("Your token is:", token)
         const response = await fetch(API_URL + url, {
             method: "DELETE",
             headers: {
@@ -57,8 +61,18 @@ export function useApiService() {
                 "Authorization": "Bearer " + token
             },
         });
-        return response.json();
+        return handleResponse(response);
     };
+
+    async function handleResponse(response: Response) {
+        const responseJson = await response.json();
+        console.log("Backend response:", responseJson);
+        if (!response.ok) {
+            console.log("Something went wrong when fetching the data: ", responseJson.message);
+            throw new Error(responseJson.message);
+        }
+        return responseJson.data;
+    }
 
     return { getFetch, postFetch, putFetch, deleteFetch };
 }
