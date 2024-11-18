@@ -58,7 +58,7 @@ export const useGetUsers = (name: string = "", page: number = 0, pageSize: numbe
 };
 
 export const useShareSnippet = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations
 
   return useMutation<Snippet, Error, { snippetId: string; userId: string }>(
       async({snippetId, userId}) => await snippetOperations.shareSnippet(snippetId, userId)
