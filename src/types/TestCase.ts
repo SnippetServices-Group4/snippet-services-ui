@@ -1,6 +1,14 @@
 export type TestCase = {
-    id: string;
+    testId: string;
     name: string;
-    input?: string[];
-    output?: string[];
+    inputs?: string[];
+    outputs?: string[];
+    state: TestState;
 };
+
+export enum TestState {
+    PASSED = "PASS",
+    FAILED = "FAILED",
+    RUNNING = "RUNNING",
+    NOT_STARTED = "NOT_STARTED",
+}

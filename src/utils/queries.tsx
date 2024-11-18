@@ -2,7 +2,7 @@ import {useMutation, UseMutationResult, useQuery} from 'react-query';
 import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from './snippet.ts';
 import {SnippetOperations} from "./snippetOperations.ts";
 import {PaginatedUsers} from "./users.ts";
-import {TestCase} from "../types/TestCase.ts";
+import {TestCase, TestState} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
 import {FakeSnippetOperations} from "./mock/fakeSnippetOperations.ts";
@@ -66,12 +66,13 @@ export const useShareSnippet = () => {
 };
 
 
-export const useGetTestCases = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+export const useGetTestCases = (snippetId: string) => {
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useQuery<TestCase[] | undefined, Error>(['testCases'], async() => await snippetOperations.getTestCases(), {});
+  return useQuery<TestCase[] | undefined, Error>(['testCases', snippetId], async() => await snippetOperations.getTestCases(snippetId), {
+    enabled: !!snippetId
+  });
 };
-
 export const usePostTestCase = () => {
   const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
@@ -92,12 +93,10 @@ export const useRemoveTestCase = ({onSuccess}: {onSuccess: () => void}) => {
   );
 };
 
-export type TestCaseResult = "success" | "fail"
-
 export const useTestSnippet = () => {
   const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useMutation<TestCaseResult, Error, Partial<TestCase>>(
+  return useMutation<TestState, Error, Partial<TestCase>>(
       async(tc) => await snippetOperations.testSnippet(tc)
   )
 }
