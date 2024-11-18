@@ -103,8 +103,17 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve("");
     }
 
-    shareSnippet(): Promise<Snippet> {
-        return Promise.resolve({id: "", name: "", author: "", content: "", extension: "", language: "", compliance: "pending"});
+    async shareSnippet(snippetId: string, userId: string): Promise<Snippet> {
+        try {
+            const response = await this.apiService.postFetch("/permissions/reader/share", {
+                snippetId,
+                targetUserId: userId
+            });
+            return adaptSnippet(response.snippet);
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
 
     testSnippet(): Promise<TestCaseResult> {
