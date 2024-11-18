@@ -65,7 +65,6 @@ export const useShareSnippet = () => {
   );
 };
 
-
 export const useGetTestCases = (snippetId: string) => {
   const snippetOperations = useSnippetsOperations().snippetOperations;
 
@@ -73,23 +72,24 @@ export const useGetTestCases = (snippetId: string) => {
     enabled: !!snippetId
   });
 };
-export const usePostTestCase = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useMutation<TestCase, Error, Partial<TestCase>>(
-      async(tc) => await snippetOperations.postTestCase(tc)
+export const usePostTestCase = () => {
+  const snippetOperations = useSnippetsOperations().snippetOperations;
+
+  return useMutation<TestCase, Error, { testCase: Partial<TestCase>, snippetId: string }>(
+    async({ testCase, snippetId }) => await snippetOperations.postTestCase(testCase, snippetId)
   );
 };
 
-export const useRemoveTestCase = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+export const useRemoveTestCase = ({ onSuccess }: { onSuccess: () => void }) => {
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useMutation<string, Error, string>(
-      ['removeTestCase'],
-      async(id) => await snippetOperations.removeTestCase(id),
-      {
-        onSuccess,
-      }
+  return useMutation<string, Error, { id: string, snippetId: string }>(
+    ['removeTestCase'],
+    async({ id, snippetId }) => await snippetOperations.removeTestCase(id, snippetId),
+    {
+      onSuccess,
+    }
   );
 };
 
