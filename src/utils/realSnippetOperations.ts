@@ -85,7 +85,7 @@ export class RealSnippetOperations implements SnippetOperations {
     }
 
     async removeTestCase(testId: string, snippetId: string): Promise<string> {
-        const response = await this.apiService.deleteFetch(`/snippets/testCase/update/${testId}/for/${snippetId}`);
+        const response = await this.apiService.deleteFetch(`/snippets/testCase/delete/${testId}/for/${snippetId}`);
         return response.message;
     }
 
