@@ -6,9 +6,4 @@ export type TestCase = {
     state: TestState;
 };
 
-export enum TestState {
-    PASSED = "PASS",
-    FAILED = "FAILED",
-    RUNNING = "RUNNING",
-    NOT_STARTED = "NOT_STARTED",
-}
+export type TestState = "PASSED" | "FAILED" | "RUNNING" | "NOT_STARTED";

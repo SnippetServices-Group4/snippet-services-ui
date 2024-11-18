@@ -3,8 +3,7 @@ import {FakeSnippetStore} from './fakeSnippetStore'
 import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from '../snippet'
 import autoBind from 'auto-bind'
 import {PaginatedUsers} from "../users.ts";
-import {TestCase} from "../../types/TestCase.ts";
-import {TestCaseResult} from "../queries.tsx";
+import {TestCase, TestState} from "../../types/TestCase.ts";
 import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 
@@ -48,9 +47,9 @@ export class FakeSnippetOperations implements SnippetOperations {
     })
   }
 
-  getUserFriends(name: string = "", page: number = 1, pageSize: number = 10): Promise<PaginatedUsers> {
+  getUserFriends(page: number = 1, pageSize: number = 10): Promise<PaginatedUsers> {
     return new Promise(resolve => {
-      setTimeout(() => resolve(this.fakeStore.getUserFriends(name,page,pageSize)), DELAY)
+      setTimeout(() => resolve(this.fakeStore.getUserFriends("",page,pageSize)), DELAY)
     })
   }
 
@@ -97,7 +96,7 @@ export class FakeSnippetOperations implements SnippetOperations {
     })
   }
 
-  testSnippet(): Promise<TestCaseResult> {
+  testSnippet(): Promise<TestState> {
     return new Promise(resolve => {
       setTimeout(() => resolve(this.fakeStore.testSnippet()), DELAY)
     })

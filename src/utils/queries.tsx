@@ -54,7 +54,7 @@ export const useUpdateSnippetById = ({onSuccess}: {onSuccess: () => void}): UseM
 export const useGetUsers = (name: string = "", page: number = 0, pageSize: number = 10) => {
   const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useQuery<PaginatedUsers, Error>(['users',name,page,pageSize], async() => await snippetOperations.getUserFriends(name,page, pageSize));
+  return useQuery<PaginatedUsers, Error>(['users',name,page,pageSize], async() => await snippetOperations.getUserFriends(page, pageSize));
 };
 
 export const useShareSnippet = () => {

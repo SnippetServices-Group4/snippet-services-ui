@@ -71,7 +71,7 @@ export class RealSnippetOperations implements SnippetOperations {
     }
 
     postTestCase(): Promise<TestCase> {
-        return Promise.resolve({testId: "", name: "", state: TestState.NOT_STARTED});
+        return Promise.resolve({testId: "", name: "", state: "NOT_STARTED"});
     }
 
     removeTestCase(): Promise<string> {
@@ -87,7 +87,7 @@ export class RealSnippetOperations implements SnippetOperations {
     }
 
     testSnippet(): Promise<TestState> {
-        return Promise.resolve(TestState.FAILED);
+        return Promise.resolve("FAILED");
     }
 
     async updateSnippetById(id: string, snippet: UpdateSnippet): Promise<Snippet> {

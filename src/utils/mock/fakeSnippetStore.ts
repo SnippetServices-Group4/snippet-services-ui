@@ -1,8 +1,7 @@
 import {ComplianceEnum, CreateSnippet, Snippet, UpdateSnippet} from '../snippet'
 import {v4 as uuid} from 'uuid'
 import {PaginatedUsers} from "../users.ts";
-import {TestCase} from "../../types/TestCase.ts";
-import {TestCaseResult} from "../queries.tsx";
+import {TestCase, TestState} from "../../types/TestCase.ts";
 import {FileType} from "../../types/FileType.ts";
 import {Rule} from "../../types/Rule.ts";
 
@@ -125,16 +124,18 @@ const INITIAL_LINTING_RULES: Rule[] = [
 
 const fakeTestCases: TestCase[] = [
   {
-    id: uuid(),
+    testId: uuid(),
     name: "Test Case 1",
-    input: ["A", "B"],
-    output: ["C", "D"]
+    inputs: ["A", "B"],
+    outputs: ["C", "D"],
+    state: "NOT_STARTED"
   },
   {
-    id: uuid(),
+    testId: uuid(),
     name: "Test Case 2",
-    input: ["E", "F"],
-    output: ["G", "H"]
+    inputs: ["E", "F"],
+    outputs: ["G", "H"],
+    state: "NOT_STARTED"
   },
 ]
 
@@ -169,7 +170,7 @@ export class FakeSnippetStore {
     })
 
     fakeTestCases.forEach(testCase => {
-      this.testCaseMap.set(testCase.id, testCase)
+      this.testCaseMap.set(testCase.testId, testCase)
     })
     this.formattingRules = INITIAL_FORMATTING_RULES
     this.lintingRules = INITIAL_LINTING_RULES
@@ -237,7 +238,7 @@ export class FakeSnippetStore {
   }
 
   postTestCase(testCase: Partial<TestCase>): TestCase {
-    const id = testCase.id ?? uuid()
+    const id = testCase.testId ?? uuid()
     const newTestCase = {...testCase, id} as TestCase
     this.testCaseMap.set(id,newTestCase)
     return newTestCase
@@ -253,8 +254,8 @@ export class FakeSnippetStore {
     return id
   }
 
-  testSnippet(): TestCaseResult {
-    return Math.random() > 0.5 ? "success" : "fail"
+  testSnippet(): TestState {
+    return Math.random() > 0.5 ? "PASSED" : "FAILED"
   }
 
   getFileTypes(): FileType[] {
