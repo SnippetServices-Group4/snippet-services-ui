@@ -46,7 +46,7 @@ export class RealSnippetOperations implements SnippetOperations {
     }
 
     async getTestCases(snippetId: string): Promise<TestCase[]> {
-        const response = await this.apiService.getFetch("/snippets/testCases/getAll/" + snippetId);
+        const response = await this.apiService.getFetch("/snippets/testCase/getAll/" + snippetId);
         return Promise.resolve(response.testCases);
     }
 
@@ -70,12 +70,23 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve([]);
     }
 
-    postTestCase(): Promise<TestCase> {
-        return Promise.resolve({testId: "", name: "", state: "NOT_STARTED"});
+    async postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase> {
+        const isUpdate: boolean = !!testCase.testId;
+        const test = {
+            name: testCase.name,
+            inputs: testCase.inputs ?? [],
+            outputs: testCase.outputs ?? []
+        }
+        // Updating or creating the test case based on the presence of testId
+        const response = await (isUpdate ?
+            this.apiService.putFetch(`/snippets/testCase/update/${testCase.testId}/for/${snippetId}`, test) :
+            this.apiService.postFetch(`/snippets/testCase/createFor/${snippetId}`, test));
+        return response.testCase;
     }
 
-    removeTestCase(): Promise<string> {
-        return Promise.resolve("");
+    async removeTestCase(testId: string, snippetId: string): Promise<string> {
+        const response = await this.apiService.deleteFetch(`/snippets/testCase/update/${testId}/for/${snippetId}`);
+        return response.message;
     }
 
     async shareSnippet(snippetId: string, userId: string): Promise<Snippet> {
