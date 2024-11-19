@@ -36,9 +36,7 @@ export const adaptFormatRules = (rules: backFormatRules): Rule[] => {
 }
 
 export const adaptLintRules = (rules: backLintRules): Rule[] => {
-    console.log("back rules: ", rules)
-
-    const adaptedRules = [{
+    return [{
         name: "writingConventionName",
         isActive: !!rules.writingConventionName,
         value: rules.writingConventionName || "camelCase"
@@ -48,9 +46,5 @@ export const adaptLintRules = (rules: backLintRules): Rule[] => {
     }, {
         name: "readInputAcceptsExpressions",
         isActive: !!rules.readInputAcceptsExpressions,
-    }];
-
-    console.log("adapted rules: ", adaptedRules)
-
-    return adaptedRules
+    }]
 }

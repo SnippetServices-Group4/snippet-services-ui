@@ -42,9 +42,6 @@ export class RealSnippetOperations implements SnippetOperations {
     // TODO: LINTING RULES
     async getLintingRules(): Promise<Rule[]> {
         const response = await this.apiService.getFetch("/permissions/linting/rules");
-
-        console.log("back response: ", response)
-
         return adaptLintRules(response.config);
     }
 

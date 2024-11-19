@@ -117,7 +117,7 @@ export const useModifyFormatRules = ({onSuccess}: {onSuccess: () => void}) => {
 }
 
 export const useGetLintingRules = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations
 
   return useQuery<Rule[], Error>('lintingRules', async() => await snippetOperations.getLintingRules());
 }
