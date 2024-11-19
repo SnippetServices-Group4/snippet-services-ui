@@ -34,7 +34,7 @@ export interface SnippetOperations {
 
   testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult>
 
-  getFileTypes(): Promise<FileType[]>
+  getFileTypes(): FileType[]
 
   modifyFormatRule(newRules: Rule[]): Promise<Rule[]>
 

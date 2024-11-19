@@ -42,5 +42,6 @@ export type PaginatedSnippets = Pagination & {
 }
 
 export const getFileLanguage = (fileTypes: FileType[], fileExt?: string) => {
+  console.log("File extension:", fileExt, "File types:", fileTypes);
   return fileExt && fileTypes?.find(x => x.extension == fileExt)
 }
