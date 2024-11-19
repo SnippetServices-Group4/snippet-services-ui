@@ -108,7 +108,7 @@ export const useGetFormatRules = () => {
 }
 
 export const useModifyFormatRules = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations
 
   return useMutation<Rule[], Error, Rule[]>(
       async(rule) => await snippetOperations.modifyFormatRule(rule),
@@ -123,7 +123,7 @@ export const useGetLintingRules = () => {
 }
 
 export const useModifyLintingRules = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations
 
   return useMutation<Rule[], Error, Rule[]>(
       async(rule) => await snippetOperations.modifyLintingRule(rule),

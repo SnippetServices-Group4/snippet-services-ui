@@ -6,7 +6,12 @@ import {TestCase, TestState} from "../types/TestCase.ts";
 import {PaginatedUsers} from "./users.ts";
 import {useApiService} from "./api/apiService.ts";
 import {adaptSnippet, adaptSnippetsList, adaptUsers} from "./adapter/Adapter.ts";
-import {adaptFormatRules, adaptLintRules} from "./adapter/RulesAdapter.ts";
+import {
+    adaptFormatRules,
+    adaptLintRules,
+    createUpdateFormatRulesRequest,
+    createUpdateLintRulesRequest
+} from "./adapter/RulesAdapter.ts";
 
 export class RealSnippetOperations implements SnippetOperations {
     private readonly apiService = useApiService();
@@ -49,13 +54,11 @@ export class RealSnippetOperations implements SnippetOperations {
             }]
     }
 
-    // TODO: FORMATTING RULES
     async getFormatRules(): Promise<Rule[]> {
         const response = await this.apiService.getFetch("/permissions/formatting/rules");
         return adaptFormatRules(response.config);
     }
 
-    // TODO: LINTING RULES
     async getLintingRules(): Promise<Rule[]> {
         const response = await this.apiService.getFetch("/permissions/linting/rules");
         return adaptLintRules(response.config);
@@ -83,12 +86,16 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve({snippets, page, count: 20, page_size: pageSize});
     }
 
-    modifyFormatRule(): Promise<Rule[]> {
-        return Promise.resolve([]);
+    async modifyFormatRule(newRules: Rule[]): Promise<Rule[]> {
+        const response = await this.apiService.postFetch("/permissions/formatting/update/rules", createUpdateFormatRulesRequest(newRules));
+        console.log(response);
+        return newRules;
     }
 
-    modifyLintingRule(): Promise<Rule[]> {
-        return Promise.resolve([]);
+    async modifyLintingRule(newRules: Rule[]): Promise<Rule[]> {
+        const response = await this.apiService.postFetch("/permissions/linting/update/rules", createUpdateLintRulesRequest(newRules));
+        console.log(response);
+        return newRules;
     }
 
     async postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase> {
