@@ -29,8 +29,24 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve("");
     }
 
-    getFileTypes(): Promise<FileType[]> {
-        return Promise.resolve([]);
+    getFileTypes(): FileType[] {
+        return  [
+            {
+            language: "printscript",
+            extension: "prs",
+            },
+            {
+                language: "python",
+                extension: "py",
+            },
+            {
+                language: "java",
+                extension: "java",
+            },
+            {
+                language: 'golang',
+                extension: 'go'
+            }]
     }
 
     // TODO: FORMATTING RULES
