@@ -43,10 +43,12 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve([]);
     }
 
+    // TODO: FORMATTING RULES
     getFormatRules(): Promise<Rule[]> {
         return Promise.resolve([]);
     }
 
+    // TODO: LINTING RULES
     getLintingRules(): Promise<Rule[]> {
         return Promise.resolve([]);
     }
