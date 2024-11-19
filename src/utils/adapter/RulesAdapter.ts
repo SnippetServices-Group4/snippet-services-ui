@@ -66,9 +66,22 @@ export const adaptLintRules = (rules: backLintRules): Rule[] => {
 }
 
 export const createUpdateLintRulesRequest = (rules: Rule[]): backUpdateRequest<backLintRules> => {
+    function getConventionName() {
+        const rule = rules.find(r => r.name === "writingConventionName");
+        if (!rule) {
+            return "camelCase";
+        } else {
+            if (rule.isActive) {
+                return rule.value;
+            } else {
+                return "camelCase";
+            }
+        }
+    }
+
     return {
         rules: {
-            writingConventionName: String(rules.find(r => r.name === "writingConventionName")?.value),
+            writingConventionName: String(getConventionName()),
             printLnAcceptsExpressions: rules.find(r => r.name === "printLnAcceptsExpressions")?.isActive,
             readInputAcceptsExpressions: rules.find(r => r.name === "readInputAcceptsExpressions")?.isActive
         }
