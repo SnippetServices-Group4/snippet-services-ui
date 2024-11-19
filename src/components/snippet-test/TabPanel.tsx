@@ -17,7 +17,6 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
 
     const {mutateAsync: testSnippet, data} = useTestSnippet();
 
-
     return (
         <div
             role="tabpanel"
@@ -40,8 +39,8 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                             size="small"
                             id="tags-filled"
                             freeSolo
-                            value={testData?.input ?? []}
-                            onChange={(_, value) => setTestData({...testData, input: value})}
+                            value={testData?.inputs ?? []}
+                            onChange={(_, value) => setTestData({...testData, inputs: value})}
                             renderTags={(value: readonly string[], getTagProps) =>
                                 value.map((option: string, index: number) => (
                                     <Chip variant="outlined" label={option} {...getTagProps({index})} />
@@ -62,8 +61,8 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                             size="small"
                             id="tags-filled"
                             freeSolo
-                            value={testData?.output ?? []}
-                            onChange={(_, value) => setTestData({...testData, output: value})}
+                            value={testData?.outputs ?? []}
+                            onChange={(_, value) => setTestData({...testData, outputs: value})}
                             renderTags={(value: readonly string[], getTagProps) =>
                                 value.map((option: string, index: number) => (
                                     <Chip variant="outlined" label={option} {...getTagProps({index})} />
@@ -79,8 +78,8 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                     </Box>
                     <Box display="flex" flexDirection="row" gap={1}>
                         {
-                            (testData?.id && removeTestCase) && (
-                            <Button onClick={() => removeTestCase(testData?.id ?? "")} variant={"outlined"} color={"error"}
+                            (testData?.testId && removeTestCase) && (
+                            <Button onClick={() => removeTestCase(testData?.testId ?? "")} variant={"outlined"} color={"error"}
                                     startIcon={<Delete/>}>
                                 Remove
                             </Button>)
@@ -92,7 +91,7 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                                 disableElevation>
                             Test
                         </Button>
-                        {data && (data === "success" ? <Chip label="Pass" color="success"/> :
+                        {data && (data === "PASSED" ? <Chip label="Pass" color="success"/> :
                             <Chip label="Fail" color="error"/>)}
                     </Box>
                 </Box>

@@ -69,7 +69,7 @@ export function useApiService() {
         console.log("Backend response:", responseJson);
         if (!response.ok) {
             console.log("Something went wrong when fetching the data: ", responseJson.message);
-            throw new Error(responseJson.message);
+            return Promise.reject(responseJson.message);
         }
         return responseJson.data;
     }
