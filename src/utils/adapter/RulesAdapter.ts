@@ -1,7 +1,7 @@
 import {Rule} from "../../types/Rule.ts";
 
 type backLintRules = {
-    "writingConventionName": string,
+    "writingConventionName": string | null,
     "printLnAcceptsExpressions": boolean,
     "readInputAcceptsExpressions": boolean
 }
@@ -67,7 +67,7 @@ export const createUpdateFormatRulesRequest = (rules: Rule[]): backUpdateRequest
 export const adaptLintRules = (rules: backLintRules): Rule[] => {
     return [{
         name: "writingConventionName",
-        isActive: rules.writingConventionName !== null || rules.writingConventionName !== "",
+        isActive: rules.writingConventionName !== null && rules.writingConventionName !== "",
         value: rules.writingConventionName
     }, {
         name: "printLnAcceptsExpressions",
