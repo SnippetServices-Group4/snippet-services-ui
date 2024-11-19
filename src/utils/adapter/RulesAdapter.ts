@@ -14,6 +14,10 @@ type backFormatRules = {
     "indentSize"?: number
 }
 
+type backUpdateRequest<T> = {
+    rules: T
+}
+
 export const adaptFormatRules = (rules: backFormatRules): Rule[] => {
     return [{
         name: "spaceBeforeColon",
@@ -35,6 +39,18 @@ export const adaptFormatRules = (rules: backFormatRules): Rule[] => {
     }]
 }
 
+export const createUpdateFormatRulesRequest = (rules: Rule[]): backUpdateRequest<backFormatRules> => {
+    return {
+        rules: {
+            spaceBeforeColon: rules.find(r => r.name === "spaceBeforeColon")?.isActive,
+            spaceAfterColon: rules.find(r => r.name === "spaceAfterColon")?.isActive,
+            equalSpaces: rules.find(r => r.name === "equalSpaces")?.isActive,
+            printLineBreaks: Number(rules.find(r => r.name === "printLineBreaks")?.value),
+            indentSize: Number(rules.find(r => r.name === "indentSize")?.value)
+        }
+    }
+}
+
 export const adaptLintRules = (rules: backLintRules): Rule[] => {
     return [{
         name: "writingConventionName",
@@ -47,4 +63,14 @@ export const adaptLintRules = (rules: backLintRules): Rule[] => {
         name: "readInputAcceptsExpressions",
         isActive: !!rules.readInputAcceptsExpressions,
     }]
+}
+
+export const createUpdateLintRulesRequest = (rules: Rule[]): backUpdateRequest<backLintRules> => {
+    return {
+        rules: {
+            writingConventionName: String(rules.find(r => r.name === "writingConventionName")?.value),
+            printLnAcceptsExpressions: rules.find(r => r.name === "printLnAcceptsExpressions")?.isActive,
+            readInputAcceptsExpressions: rules.find(r => r.name === "readInputAcceptsExpressions")?.isActive
+        }
+    }
 }
