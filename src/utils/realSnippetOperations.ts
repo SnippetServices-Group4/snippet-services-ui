@@ -6,6 +6,7 @@ import {TestCase, TestState} from "../types/TestCase.ts";
 import {PaginatedUsers} from "./users.ts";
 import {useApiService} from "./api/apiService.ts";
 import {adaptSnippet, adaptSnippetsList, adaptUsers} from "./adapter/Adapter.ts";
+import {adaptFormatRules} from "./adapter/RulesAdapter.ts";
 
 export class RealSnippetOperations implements SnippetOperations {
     private readonly apiService = useApiService();
@@ -32,10 +33,13 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve([]);
     }
 
-    getFormatRules(): Promise<Rule[]> {
-        return Promise.resolve([]);
+    // TODO: FORMATTING RULES
+    async getFormatRules(): Promise<Rule[]> {
+        const response = await this.apiService.getFetch("/permissions/formatting/rules");
+        return adaptFormatRules(response.config);
     }
 
+    // TODO: LINTING RULES
     getLintingRules(): Promise<Rule[]> {
         return Promise.resolve([]);
     }

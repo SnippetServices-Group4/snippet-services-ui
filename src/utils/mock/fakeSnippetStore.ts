@@ -65,30 +65,30 @@ const paginatedUsers: PaginatedUsers = {
 
 const INITIAL_FORMATTING_RULES: Rule[] = [
   {
-    id: '1',
+    // id: '1',
     name: "indentation",
     isActive: true,
     value: 3
   },
   {
-    id: '2',
+    // id: '2',
     name: "open-if-block-on-same-line",
     isActive: false,
   },
   {
-    id: '3',
+    // id: '3',
     name: "max-line-length",
     isActive: true,
     value: 100
   },
   {
-    id: '4',
+    // id: '4',
     name: "no-trailing-spaces",
     isActive: false,
     value: null
   },
   {
-    id: '5',
+    // id: '5',
     name: "no-multiple-empty-lines",
     isActive: false,
     value: null,
@@ -97,25 +97,25 @@ const INITIAL_FORMATTING_RULES: Rule[] = [
 
 const INITIAL_LINTING_RULES: Rule[] = [
   {
-    id: '1',
+    // id: '1',
     name: "no-expressions-in-print-line",
     isActive: true,
     value: null
   },
   {
-    id: '2',
+    // id: '2',
     name: "no-unused-vars",
     isActive: true,
     value: null
   },
   {
-    id: '3',
+    // id: '3',
     name: "no-undef-vars",
     isActive: false,
     value: null
   },
   {
-    id: '4',
+    // id: '4',
     name: "no-unused-params",
     isActive: false,
     value: null

@@ -102,7 +102,7 @@ export const useTestSnippet = () => {
 }
 
 export const useGetFormatRules = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations
 
   return useQuery<Rule[], Error>('formatRules', async() => await snippetOperations.getFormatRules());
 }
