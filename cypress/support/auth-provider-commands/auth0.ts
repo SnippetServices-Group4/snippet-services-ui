@@ -14,5 +14,5 @@ export function loginViaAuth0Ui(username: string, password: string) {
   )
 
   // Ensure Auth0 has redirected us back to the RWA.
-  cy.url().should('equal', 'https://snippetservicesgr4.duckdns.org/')
+  cy.url().should('equal', Cypress.config('baseUrl') + '/')
 }
