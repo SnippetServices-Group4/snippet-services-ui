@@ -40,13 +40,26 @@ export const adaptFormatRules = (rules: backFormatRules): Rule[] => {
 }
 
 export const createUpdateFormatRulesRequest = (rules: Rule[]): backUpdateRequest<backFormatRules> => {
+    function getNumber(ruleName: string) {
+        const rule = rules.find(r => r.name === ruleName);
+        if (!rule) {
+            return 0;
+        } else {
+            if (rule.isActive) {
+                return rule.value;
+            } else {
+                return 0;
+            }
+        }
+    }
+
     return {
         rules: {
             spaceBeforeColon: rules.find(r => r.name === "spaceBeforeColon")?.isActive ?? false,
             spaceAfterColon: rules.find(r => r.name === "spaceAfterColon")?.isActive ?? false,
             equalSpaces: rules.find(r => r.name === "equalSpaces")?.isActive ?? false,
-            printLineBreaks: Number(rules.find(r => r.name === "printLineBreaks")?.value),
-            indentSize: Number(rules.find(r => r.name === "indentSize")?.value)
+            printLineBreaks: Number(getNumber("printLineBreaks")),
+            indentSize: Number(getNumber("indentSize"))
         }
     }
 }
@@ -54,8 +67,8 @@ export const createUpdateFormatRulesRequest = (rules: Rule[]): backUpdateRequest
 export const adaptLintRules = (rules: backLintRules): Rule[] => {
     return [{
         name: "writingConventionName",
-        isActive: !!rules.writingConventionName,
-        value: rules.writingConventionName || "camelCase"
+        isActive: rules.writingConventionName !== null || rules.writingConventionName !== "",
+        value: rules.writingConventionName
     }, {
         name: "printLnAcceptsExpressions",
         isActive: rules.printLnAcceptsExpressions,
