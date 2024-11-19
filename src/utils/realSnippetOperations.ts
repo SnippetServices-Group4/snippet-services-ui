@@ -33,13 +33,11 @@ export class RealSnippetOperations implements SnippetOperations {
         return Promise.resolve([]);
     }
 
-    // TODO: FORMATTING RULES
     async getFormatRules(): Promise<Rule[]> {
         const response = await this.apiService.getFetch("/permissions/formatting/rules");
         return adaptFormatRules(response.config);
     }
 
-    // TODO: LINTING RULES
     async getLintingRules(): Promise<Rule[]> {
         const response = await this.apiService.getFetch("/permissions/linting/rules");
         return adaptLintRules(response.config);
