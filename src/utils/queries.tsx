@@ -151,7 +151,7 @@ export const useDeleteSnippet = ({onSuccess}: {onSuccess: () => void}) => {
 }
 
 export const useGetFileTypes = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations
 
-  return useQuery<FileType[], Error>('fileTypes', async() => await snippetOperations.getFileTypes());
+  return useQuery<FileType[], Error>('fileTypes', () => snippetOperations.getFileTypes());
 }
