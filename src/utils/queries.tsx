@@ -2,7 +2,7 @@ import {useMutation, UseMutationResult, useQuery} from 'react-query';
 import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from './snippet.ts';
 import {SnippetOperations} from "./snippetOperations.ts";
 import {PaginatedUsers} from "./users.ts";
-import {TestCase} from "../types/TestCase.ts";
+import {TestCase, TestState} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
 import {FakeSnippetOperations} from "./mock/fakeSnippetOperations.ts";
@@ -54,7 +54,7 @@ export const useUpdateSnippetById = ({onSuccess}: {onSuccess: () => void}): UseM
 export const useGetUsers = (name: string = "", page: number = 0, pageSize: number = 10) => {
   const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useQuery<PaginatedUsers, Error>(['users',name,page,pageSize], async() => await snippetOperations.getUserFriends(name,page, pageSize));
+  return useQuery<PaginatedUsers, Error>(['users',name,page,pageSize], async() => await snippetOperations.getUserFriends(page, pageSize));
 };
 
 export const useShareSnippet = () => {
@@ -65,39 +65,38 @@ export const useShareSnippet = () => {
   );
 };
 
+export const useGetTestCases = (snippetId: string) => {
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-export const useGetTestCases = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
-
-  return useQuery<TestCase[] | undefined, Error>(['testCases'], async() => await snippetOperations.getTestCases(), {});
+  return useQuery<TestCase[] | undefined, Error>(['testCases', snippetId], async() => await snippetOperations.getTestCases(snippetId), {
+    enabled: !!snippetId
+  });
 };
 
 export const usePostTestCase = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useMutation<TestCase, Error, Partial<TestCase>>(
-      async(tc) => await snippetOperations.postTestCase(tc)
+  return useMutation<TestCase, Error, { testCase: Partial<TestCase>, snippetId: string }>(
+    async({ testCase, snippetId }) => await snippetOperations.postTestCase(testCase, snippetId)
   );
 };
 
-export const useRemoveTestCase = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+export const useRemoveTestCase = ({ onSuccess }: { onSuccess: () => void }) => {
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useMutation<string, Error, string>(
-      ['removeTestCase'],
-      async(id) => await snippetOperations.removeTestCase(id),
-      {
-        onSuccess,
-      }
+  return useMutation<string, Error, { id: string, snippetId: string }>(
+    ['removeTestCase'],
+    async({ id, snippetId }) => await snippetOperations.removeTestCase(id, snippetId),
+    {
+      onSuccess,
+    }
   );
 };
-
-export type TestCaseResult = "success" | "fail"
 
 export const useTestSnippet = () => {
   const snippetOperations = useSnippetsOperations().fakeSnippetOperations
 
-  return useMutation<TestCaseResult, Error, Partial<TestCase>>(
+  return useMutation<TestState, Error, Partial<TestCase>>(
       async(tc) => await snippetOperations.testSnippet(tc)
   )
 }
