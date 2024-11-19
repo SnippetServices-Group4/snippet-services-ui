@@ -1,9 +1,8 @@
-const FRONTEND_URL = Cypress.env("FRONTEND_URL");
-const AUTH0_USERNAME = Cypress.env("AUTH0_USERNAME");
-const AUTH0_PASSWORD = Cypress.env("AUTH0_PASSWORD");
-const token = Cypress.env('auth0_token');
-
 describe('Home', () => {
+  const FRONTEND_URL = Cypress.env("FRONTEND_URL");
+  const AUTH0_USERNAME = Cypress.env("AUTH0_USERNAME");
+  const AUTH0_PASSWORD = Cypress.env("AUTH0_PASSWORD");
+  const token = Cypress.env('auth0_token');
   beforeEach(() => {
     cy.loginToAuth0(
         AUTH0_USERNAME,
