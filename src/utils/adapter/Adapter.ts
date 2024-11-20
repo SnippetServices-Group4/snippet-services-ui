@@ -1,4 +1,4 @@
-import {noContentSnippet, Snippet} from "../snippet.ts";
+import {ComplianceEnum, noContentSnippet, Snippet} from "../snippet.ts";
 import {User} from "../users.ts";
 
 export type backSnippet = {
@@ -10,7 +10,8 @@ export type backSnippet = {
         "version": string,
         "extension": string
     }
-    content: string
+    content: string,
+    "status": string
 }
 
 export type backListedSnippets = {
@@ -21,7 +22,8 @@ export type backListedSnippets = {
         "langName": string,
         "version": string,
         "extension": string
-    }
+    },
+    "status": string
 }[]
 
 export const adaptSnippet = (snippet: backSnippet): Snippet => {
@@ -32,8 +34,6 @@ export const adaptSnippet = (snippet: backSnippet): Snippet => {
         language: snippet.language.langName,
         content: snippet.content,
         extension: snippet.language.extension,
-        // TODO: define this field in the backend response
-        compliance: "compliant"
     }
 }
 
@@ -44,8 +44,7 @@ export const adaptSnippetsList = (snippets: backListedSnippets): noContentSnippe
         author: snippet.owner,
         language: snippet.language.langName,
         extension: snippet.language.extension,
-        // TODO: define this field in the backend response
-        compliance: "compliant"
+        compliance: snippet.status as ComplianceEnum
     }));
 }
 
