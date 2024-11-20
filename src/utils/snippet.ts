@@ -22,8 +22,9 @@ export type UpdateSnippet = {
 }
 
 export type Snippet = CreateSnippet & {
-  id: string
-} & SnippetStatus
+  id: string,
+  author: string;
+}
 
 export type noContentSnippet = SnippetStatus & {
   id: string,
