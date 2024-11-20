@@ -68,8 +68,9 @@ export function useApiService() {
         const responseJson = await response.json();
         console.log("Backend response:", responseJson);
         if (!response.ok) {
-            console.log("Something went wrong when fetching the data: ", responseJson.message);
-            return Promise.reject(responseJson.message);
+            const reason = responseJson.error ?? responseJson.message;
+            console.log("Something went wrong when fetching the data: ", reason);
+            return Promise.reject(reason);
         }
         return responseJson.data;
     }

@@ -4,7 +4,7 @@ import {TestCase, TestState} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
 
-export interface SnippetOperations {
+export interface ISnippetsOperations {
   listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets>
 
   createSnippet(createSnippet: CreateSnippet): Promise<Snippet>
@@ -23,7 +23,7 @@ export interface SnippetOperations {
 
   getTestCases(snippetId: string): Promise<TestCase[]>
 
-  formatSnippet(snippet: string): Promise<string>
+  formatSnippet(snippetId: string): Promise<string>
 
   postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase>
 
@@ -31,7 +31,7 @@ export interface SnippetOperations {
 
   deleteSnippet(id: string): Promise<string>
 
-  testSnippet(testCase: Partial<TestCase>): Promise<TestState>
+  testSnippet(testCase: Partial<TestCase>, snippetId: string): Promise<TestState>
 
   getFileTypes(): FileType[]
 

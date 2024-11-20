@@ -1,4 +1,4 @@
-import {SnippetOperations} from "./snippetOperations.ts";
+import {ISnippetsOperations} from "./ISnippetsOperations.ts";
 import {FileType} from "../types/FileType.ts";
 import {CreateSnippet, noContentSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "./snippet.ts";
 import {Rule} from "../types/Rule.ts";
@@ -13,7 +13,7 @@ import {
     createUpdateLintRulesRequest
 } from "./adapter/RulesAdapter.ts";
 
-export class RealSnippetOperations implements SnippetOperations {
+export class SnippetsOperations implements ISnippetsOperations {
     private readonly apiService = useApiService();
 
     async createSnippet(createSnippet: CreateSnippet): Promise<Snippet> {
@@ -30,8 +30,9 @@ export class RealSnippetOperations implements SnippetOperations {
         return response.message;
     }
 
-    formatSnippet(): Promise<string> {
-        return Promise.resolve("");
+    async formatSnippet(snippetId: string): Promise<string> {
+        const response = await this.apiService.postFetch(`/permissions/formatting/run/${snippetId}`, {})
+        return response.formatResult.formattedCode;
     }
 
     getFileTypes(): FileType[] {
@@ -125,8 +126,13 @@ export class RealSnippetOperations implements SnippetOperations {
         return adaptSnippet(response.snippet);
     }
 
-    testSnippet(): Promise<TestState> {
-        return Promise.resolve("FAILED");
+    async testSnippet(testCase: Partial<TestCase>, snippetId: string): Promise<TestState> {
+        const response = await this.apiService.postFetch(`/snippets/snippets/runTest/${snippetId}`, {
+            testId: testCase.testId,
+            inputs: testCase.inputs,
+            outputs: testCase.outputs,
+        });
+        return response.executedTest.testState;
     }
 
     async updateSnippetById(id: string, snippet: UpdateSnippet): Promise<Snippet> {
