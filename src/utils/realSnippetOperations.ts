@@ -30,8 +30,9 @@ export class RealSnippetOperations implements SnippetOperations {
         return response.message;
     }
 
-    formatSnippet(): Promise<string> {
-        return Promise.resolve("");
+    async formatSnippet(snippetId: string): Promise<string> {
+        const response = await this.apiService.postFetch(`/permissions/formatting/run/${snippetId}`, {})
+        return response.formatResult.formattedCode;
     }
 
     getFileTypes(): FileType[] {
@@ -126,11 +127,10 @@ export class RealSnippetOperations implements SnippetOperations {
     }
 
     async testSnippet(testCase: Partial<TestCase>, snippetId: string): Promise<TestState> {
-        const response = await this.apiService.postFetch("/snippets/snippets/runTest", {
+        const response = await this.apiService.postFetch(`/snippets/snippets/runTest/${snippetId}`, {
             testId: testCase.testId,
             inputs: testCase.inputs,
             outputs: testCase.outputs,
-            snippetId
         });
         return response.executedTest.testState;
     }

@@ -42,7 +42,7 @@ export const useUpdateSnippetById = ({onSuccess}: {onSuccess: () => void}): UseM
   id: string;
   updateSnippet: UpdateSnippet
 }> => {
-  const snippetOperations = useSnippetsOperations().snippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useMutation<Snippet, Error, { id: string; updateSnippet: UpdateSnippet }>(
       async({id, updateSnippet}) => await snippetOperations.updateSnippetById(id, updateSnippet),{
@@ -58,7 +58,7 @@ export const useGetUsers = (name: string = "", page: number = 0, pageSize: numbe
 };
 
 export const useShareSnippet = () => {
-  const snippetOperations = useSnippetsOperations().snippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useMutation<Snippet, Error, { snippetId: string; userId: string }>(
       async({snippetId, userId}) => await snippetOperations.shareSnippet(snippetId, userId)
@@ -102,7 +102,7 @@ export const useTestSnippet = () => {
 }
 
 export const useGetFormatRules = () => {
-  const snippetOperations = useSnippetsOperations().snippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useQuery<Rule[], Error>('formatRules', async() => await snippetOperations.getFormatRules());
 }
@@ -117,13 +117,13 @@ export const useModifyFormatRules = ({onSuccess}: {onSuccess: () => void}) => {
 }
 
 export const useGetLintingRules = () => {
-  const snippetOperations = useSnippetsOperations().snippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useQuery<Rule[], Error>('lintingRules', async() => await snippetOperations.getLintingRules());
 }
 
 export const useModifyLintingRules = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations().snippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useMutation<Rule[], Error, Rule[]>(
       async(rule) => await snippetOperations.modifyLintingRule(rule),
@@ -132,15 +132,15 @@ export const useModifyLintingRules = ({onSuccess}: {onSuccess: () => void}) => {
 }
 
 export const useFormatSnippet = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useMutation<string, Error, string>(
-      async(snippetContent) => await snippetOperations.formatSnippet(snippetContent)
+      async(snippetId: string) => await snippetOperations.formatSnippet(snippetId)
   );
 }
 
 export const useDeleteSnippet = ({onSuccess}: {onSuccess: () => void}) => {
-  const snippetOperations = useSnippetsOperations().snippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useMutation<string, Error, string>(
       async(id) => await snippetOperations.deleteSnippet(id),
@@ -151,7 +151,7 @@ export const useDeleteSnippet = ({onSuccess}: {onSuccess: () => void}) => {
 }
 
 export const useGetFileTypes = () => {
-  const snippetOperations = useSnippetsOperations().snippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
   return useQuery<FileType[], Error>('fileTypes', () => snippetOperations.getFileTypes());
 }
