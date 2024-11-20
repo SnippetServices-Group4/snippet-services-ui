@@ -125,8 +125,14 @@ export class RealSnippetOperations implements SnippetOperations {
         return adaptSnippet(response.snippet);
     }
 
-    testSnippet(): Promise<TestState> {
-        return Promise.resolve("FAILED");
+    async testSnippet(testCase: Partial<TestCase>, snippetId: string): Promise<TestState> {
+        const response = await this.apiService.postFetch("/snippets/snippets/runTest", {
+            testId: testCase.testId,
+            inputs: testCase.inputs,
+            outputs: testCase.outputs,
+            snippetId
+        });
+        return response.executedTest.testState;
     }
 
     async updateSnippetById(id: string, snippet: UpdateSnippet): Promise<Snippet> {

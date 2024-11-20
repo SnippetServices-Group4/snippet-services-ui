@@ -94,11 +94,11 @@ export const useRemoveTestCase = ({ onSuccess }: { onSuccess: () => void }) => {
 };
 
 export const useTestSnippet = () => {
-  const snippetOperations = useSnippetsOperations().fakeSnippetOperations
+  const snippetOperations = useSnippetsOperations().snippetOperations;
 
-  return useMutation<TestState, Error, Partial<TestCase>>(
-      async(tc) => await snippetOperations.testSnippet(tc)
-  )
+  return useMutation<TestState, Error, Partial<TestCase> & { snippetId: string }>(
+      async ({ snippetId, ...tc }) => await snippetOperations.testSnippet(tc, snippetId)
+  );
 }
 
 export const useGetFormatRules = () => {
