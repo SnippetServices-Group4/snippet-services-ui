@@ -18,6 +18,10 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
 
     const {mutateAsync: testSnippet, data} = useTestSnippet();
 
+    const state = data || testData?.state;
+    const chipLabel = state === "PASSED" ? "Pass" : state === "NOT_STARTED" ? "Not Started" : "Fail";
+    const chipColor = state === "PASSED" ? "success" : state === "NOT_STARTED" ? "default" : "error";
+
     return (
         <div
             role="tabpanel"
@@ -91,8 +95,7 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
                         <Button onClick={() => testSnippet({ ...testData, snippetId })} variant={"contained"} startIcon={<BugReport />} disableElevation>
                             Test
                         </Button>
-                        {data && (data === "PASSED" ? <Chip label="Pass" color="success"/> :
-                            <Chip label="Fail" color="error"/>)}
+                        <Chip label={chipLabel} color={chipColor} />
                     </Box>
                 </Box>
             )}
