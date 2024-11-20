@@ -1,4 +1,4 @@
-import {SnippetOperations} from "./snippetOperations.ts";
+import {ISnippetsOperations} from "./ISnippetsOperations.ts";
 import {FileType} from "../types/FileType.ts";
 import {CreateSnippet, noContentSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from "./snippet.ts";
 import {Rule} from "../types/Rule.ts";
@@ -13,7 +13,7 @@ import {
     createUpdateLintRulesRequest
 } from "./adapter/RulesAdapter.ts";
 
-export class RealSnippetOperations implements SnippetOperations {
+export class SnippetsOperations implements ISnippetsOperations {
     private readonly apiService = useApiService();
 
     async createSnippet(createSnippet: CreateSnippet): Promise<Snippet> {
