@@ -33,7 +33,8 @@ export class FakeSnippetOperations implements SnippetOperations {
       page: page,
       page_size: pageSize,
       count: 20,
-      snippets: page == 0 ? this.fakeStore.listSnippetDescriptors().splice(0,pageSize) : this.fakeStore.listSnippetDescriptors().splice(1,2)
+      // snippets: page == 0 ? this.fakeStore.listSnippetDescriptors().splice(0,pageSize) : this.fakeStore.listSnippetDescriptors().splice(1,2)
+      snippets: []
     }
 
     return new Promise(resolve => {
