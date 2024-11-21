@@ -1,11 +1,10 @@
 import {CreateSnippet, PaginatedSnippets, Snippet, UpdateSnippet} from './snippet'
 import {PaginatedUsers} from "./users.ts";
-import {TestCase} from "../types/TestCase.ts";
-import {TestCaseResult} from "./queries.tsx";
+import {TestCase, TestState} from "../types/TestCase.ts";
 import {FileType} from "../types/FileType.ts";
 import {Rule} from "../types/Rule.ts";
 
-export interface SnippetOperations {
+export interface ISnippetsOperations {
   listSnippetDescriptors(page: number, pageSize: number, snippetName?: string | undefined): Promise<PaginatedSnippets>
 
   createSnippet(createSnippet: CreateSnippet): Promise<Snippet>
@@ -14,7 +13,7 @@ export interface SnippetOperations {
 
   updateSnippetById(id: string, updateSnippet: UpdateSnippet): Promise<Snippet>
 
-  getUserFriends(name?: string,page?: number,pageSize?: number): Promise<PaginatedUsers>
+  getUserFriends(page?: number,pageSize?: number): Promise<PaginatedUsers>
 
   shareSnippet(snippetId: string,userId: string): Promise<Snippet>
 
@@ -22,19 +21,19 @@ export interface SnippetOperations {
 
   getLintingRules(): Promise<Rule[]>
 
-  getTestCases(): Promise<TestCase[]>
+  getTestCases(snippetId: string): Promise<TestCase[]>
 
-  formatSnippet(snippet: string): Promise<string>
+  formatSnippet(snippetId: string): Promise<string>
 
-  postTestCase(testCase: Partial<TestCase>): Promise<TestCase>
+  postTestCase(testCase: Partial<TestCase>, snippetId: string): Promise<TestCase>
 
-  removeTestCase(id: string): Promise<string>
+  removeTestCase(id: string, snippetId: string): Promise<string>
 
   deleteSnippet(id: string): Promise<string>
 
-  testSnippet(testCase: Partial<TestCase>): Promise<TestCaseResult>
+  testSnippet(testCase: Partial<TestCase>, snippetId: string): Promise<TestState>
 
-  getFileTypes(): Promise<FileType[]>
+  getFileTypes(): FileType[]
 
   modifyFormatRule(newRules: Rule[]): Promise<Rule[]>
 

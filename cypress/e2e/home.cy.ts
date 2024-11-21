@@ -1,12 +1,13 @@
-import {AUTH0_PASSWORD, AUTH0_USERNAME, BACKEND_URL, FRONTEND_URL} from "../../src/utils/constants";
-import {CreateSnippet} from "../../src/utils/snippet";
-
 describe('Home', () => {
+  const FRONTEND_URL = Cypress.env("FRONTEND_URL");
+  const AUTH0_USERNAME = Cypress.env("AUTH0_USERNAME");
+  const AUTH0_PASSWORD = Cypress.env("AUTH0_PASSWORD");
+  const token = Cypress.env('auth0_token');
   beforeEach(() => {
-    // cy.loginToAuth0( TODO DE-Comment when auth0 is ready
-    //     AUTH0_USERNAME,
-    //     AUTH0_PASSWORD
-    // )
+    cy.loginToAuth0(
+        AUTH0_USERNAME,
+        AUTH0_PASSWORD
+    )
   })
   before(() => {
     process.env.FRONTEND_URL = Cypress.env("FRONTEND_URL");
@@ -34,36 +35,42 @@ describe('Home', () => {
 
   it('Can creat snippet find snippets by name', () => {
     cy.visit(FRONTEND_URL)
-    const snippetData: CreateSnippet = {
+    const snippetData = {
       name: "Test name",
       content: "print(1)",
+      version: "1.1",
       language: "printscript",
-      extension: ".ps"
+      extension: ".prs"
     }
 
-    cy.intercept('GET', BACKEND_URL+"/snippets*", (req) => {
+    cy.intercept('GET', "/snippets/snippets/getAll", (req) => {
       req.reply((res) => {
         expect(res.statusCode).to.eq(200);
       });
     }).as('getSnippets');
+    cy.wait(500);
 
     cy.request({
       method: 'POST',
-      url: '/snippets', // Adjust if you have a different base URL configured in Cypress
+      url: '/snippets/snippets/create', // Adjust if you have a different base URL configured in Cypress
       body: snippetData,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       failOnStatusCode: false // Optional: set to true if you want the test to fail on non-2xx status codes
     }).then((response) => {
-      expect(response.status).to.eq(200);
+      expect(response.status).to.eq(201);
 
-      expect(response.body.name).to.eq(snippetData.name)
-      expect(response.body.content).to.eq(snippetData.content)
-      expect(response.body.language).to.eq(snippetData.language)
-      expect(response.body).to.haveOwnProperty("id")
+      expect(response.body.data.snippet.name).to.eq(snippetData.name)
+      expect(response.body.data.snippet.content).to.eq(snippetData.content)
+      expect(response.body.data.snippet.language.langName).to.eq(snippetData.language)
+      expect(response.body.data.snippet).to.haveOwnProperty("snippetId")
 
       cy.get('.MuiBox-root > .MuiInputBase-root > .MuiInputBase-input').clear();
       cy.get('.MuiBox-root > .MuiInputBase-root > .MuiInputBase-input').type(snippetData.name + "{enter}");
 
-      cy.wait("@getSnippets")
+      cy.wait("@getSnippets");
       cy.contains(snippetData.name).should('exist');
     })
   })

@@ -1,5 +1,3 @@
-
-
 export function loginViaAuth0Ui(username: string, password: string) {
   // App landing page redirects to Auth0.
   cy.visit('/')
@@ -16,9 +14,5 @@ export function loginViaAuth0Ui(username: string, password: string) {
   )
 
   // Ensure Auth0 has redirected us back to the RWA.
-  cy.url().should('equal', 'http://localhost:3000/')
+  cy.url().should('equal', Cypress.config('baseUrl') + '/')
 }
-
-
-
-

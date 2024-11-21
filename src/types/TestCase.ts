@@ -1,6 +1,9 @@
 export type TestCase = {
-    id: string;
+    testId: string;
     name: string;
-    input?: string[];
-    output?: string[];
+    inputs?: string[];
+    outputs?: string[];
+    state: TestState;
 };
+
+export type TestState = "PASSED" | "FAILED" | "RUNNING" | "NOT_STARTED";

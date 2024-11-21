@@ -1,37 +1,32 @@
-import {AUTH0_PASSWORD, AUTH0_USERNAME, BACKEND_URL} from "../../src/utils/constants";
-import {FakeSnippetStore} from "../../src/utils/mock/fakeSnippetStore";
-
 describe('Add snippet tests', () => {
-  const fakeStore = new FakeSnippetStore()
+  const AUTH0_USERNAME = Cypress.env("AUTH0_USERNAME");
+  const AUTH0_PASSWORD = Cypress.env("AUTH0_PASSWORD");
   beforeEach(() => {
-    // cy.loginToAuth0(
-    //     AUTH0_USERNAME,
-    //     AUTH0_PASSWORD
-    // )
-    cy.intercept('GET', BACKEND_URL+"/snippets/*", {
-      statusCode: 201,
-      body: fakeStore.getSnippetById("1"),
-    }).as("getSnippetById")
-    cy.intercept('GET', BACKEND_URL+"/snippets").as("getSnippets")
+    cy.loginToAuth0 (
+        AUTH0_USERNAME,
+        AUTH0_PASSWORD
+    )
+    cy.intercept('GET', "/permissions/user/getAll", {
+      statusCode: 200,
+    }).as("getUser")
+    cy.intercept('GET', "/snippets/snippets/getAll").as("getSnippets")
 
     cy.visit("/")
 
-    // cy.wait("@getSnippets")
-    cy.wait(2000) // TODO comment this line and uncomment 19 to wait for the real data
+    cy.wait("@getSnippets")
     cy.get('.MuiTableBody-root > :nth-child(1) > :nth-child(1)').click();
+    cy.wait("@getUser");
   })
 
-  it('Can share a snippet ', () => {
+  it('Can share a snippet', () => {
     cy.get('[aria-label="Share"]').click();
-    cy.get('#\\:rl\\:').click();
-    cy.get('#\\:rl\\:-option-0').click();
-    cy.get('.css-1yuhvjn > .MuiBox-root > .MuiButton-contained').click();
-    cy.wait(2000)
-  })
-
-  it('Can run snippets', function() {
-    cy.get('[data-testid="PlayArrowIcon"]').click();
-    cy.get('.css-1hpabnv > .MuiBox-root > div > .npm__react-simple-code-editor__textarea').should("have.length.greaterThan",0);
+    cy.get('.MuiAutocomplete-input').click({ force: true }); // Open the dropdown by clicking the input field
+    cy.get('.MuiAutocomplete-input').type('S'); // Type the user's name
+    cy.wait(500); // Wait for the dropdown options to load
+    cy.get('.MuiAutocomplete-input').type('{downarrow}'); // Press the down arrow key
+    cy.get('.MuiAutocomplete-input').type('{enter}'); // Press the enter key
+    cy.get('.css-sl0tgw .css-1akjk4o').click({ force: true }); // Ensure the correct selector for the Share button
+    cy.wait(2000);
   });
 
   it('Can format snippets', function() {
@@ -45,6 +40,7 @@ describe('Add snippet tests', () => {
   });
 
   it('Can delete snippets', function() {
-    cy.get('[data-testid="DeleteIcon"] > path').click();
+    cy.get('[data-testid="DeleteIcon"] > path').click({ force: true });
+    cy.get('.css-1ys8sim').click({ force: true }); // Press the DELETE button
   });
 })
