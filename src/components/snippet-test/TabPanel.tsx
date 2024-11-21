@@ -18,9 +18,9 @@ export const TabPanel = ({value, index, test: initialTest, setTestCase, removeTe
 
     const {mutateAsync: testSnippet, data} = useTestSnippet();
 
-    const state = data || testData?.state;
-    const chipLabel = state === "PASSED" ? "Pass" : state === "NOT_STARTED" ? "Not Started" : "Fail";
-    const chipColor = state === "PASSED" ? "success" : state === "NOT_STARTED" ? "default" : "error";
+    const state = data || testData?.state ;
+    const chipLabel = state === "PASSED" ? "Pass" : state === "FAILED" ? "Fail" : "Not started";
+    const chipColor = state === "PASSED" ? "success" : state === "FAILED" ? "error" : "default";
 
     return (
         <div
