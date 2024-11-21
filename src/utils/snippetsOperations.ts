@@ -132,7 +132,7 @@ export class SnippetsOperations implements ISnippetsOperations {
             inputs: testCase.inputs,
             outputs: testCase.outputs,
         });
-        return response.executedTest.testState;
+        return response.testState;
     }
 
     async updateSnippetById(id: string, snippet: UpdateSnippet): Promise<Snippet> {
