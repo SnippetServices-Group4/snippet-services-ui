@@ -129,8 +129,8 @@ export class SnippetsOperations implements ISnippetsOperations {
     async testSnippet(testCase: Partial<TestCase>, snippetId: string): Promise<TestState> {
         const response = await this.apiService.postFetch(`/snippets/snippets/runTest/${snippetId}`, {
             testId: testCase.testId,
-            inputs: testCase.inputs,
-            outputs: testCase.outputs,
+            inputs: testCase.inputs ?? [],
+            outputs: testCase.outputs ?? []
         });
         return response.testState;
     }
